@@ -1,0 +1,81 @@
+<?php
+/*
+* funnel chart extention
+* author : pegel.linuxs@gmail.com
+*/
+class EFunnel extends CWidget
+{
+	/*
+	* @var array data 
+	*/
+	public $data=array();
+	
+	/*
+	* @var options for funnel options
+	*/
+	
+	public $width=400;
+	public $height=400;
+		
+	public function init()
+	{
+		//$options=$this->options?CJavaScript::encode($this->options):'';
+		$asset=Yii::app()->assetManager->publish(dirname(__FILE__).'/assets');
+    	$cs=Yii::app()->clientScript;
+		// publish asset    	
+		$cs->registerScriptFile($asset."/RGraph.common.core.js");
+		$cs->registerScriptFile($asset."/RGraph.common.context.js");
+		$cs->registerScriptFile($asset."/RGraph.common.annotate.js");
+		$cs->registerScriptFile($asset."/RGraph.common.tooltips.js");
+		$cs->registerScriptFile($asset."/RGraph.common.zoom.js");
+		$cs->registerScriptFile($asset."/RGraph.common.resizing.js");
+		$cs->registerScriptFile($asset."/RGraph.funnel.js");
+
+		$cs->registerScript(__CLASS__.$this->id,"
+            var funnel{$this->id} = new RGraph.Funnel('{$this->id}', [100,45,25]);
+            funnel{$this->id}.Set('chart.labels', ['Leads', 'Progress', 'Account']);
+            funnel{$this->id}.Set('chart.labels.sticks', true);
+            funnel{$this->id}.Set('chart.gutter', 40);
+            funnel{$this->id}.Set('chart.gutter.left', 280);
+            funnel{$this->id}.Set('chart.strokestyle', 'rgba(0,0,0,0)');
+            funnel{$this->id}.Set('chart.labels.x', 10);
+            funnel{$this->id}.Set('chart.text.boxed', true);
+            funnel{$this->id}.Set('chart.shadow', true);
+            funnel{$this->id}.Set('chart.shadow.color', 'gray');
+            funnel{$this->id}.Set('chart.shadow.blur', 25);
+            funnel{$this->id}.Set('chart.shadow.offsetx', 0);
+            funnel{$this->id}.Set('chart.shadow.offsety', 0);
+            
+            //funnel{$this->id}.Set('chart.title', '');
+          
+            if (!RGraph.isIE8()) {
+                var grad{$this->id} = funnel{$this->id}.context.createLinearGradient(funnel{$this->id}.Get('chart.gutter'),0,funnel{$this->id}.canvas.width - funnel{$this->id}.Get('chart.gutter'),0);
+                grad{$this->id}.addColorStop(1, 'white');
+                grad{$this->id}.addColorStop(0, 'rgba(255,255,255,0)');
+            
+                funnel{$this->id}.Set('chart.tooltips', [
+                                              'id:tooltip_leads',
+                                              'id:tooltip_progress',
+                                              'id:tooltip_account',
+                                             ]);
+
+                funnel{$this->id}.Set('chart.tooltips.effect', 'fade');
+                funnel{$this->id}.Set('chart.highlight.fill', grad{$this->id});
+                funnel{$this->id}.Set('chart.zoom.hdir', 'center');
+                funnel{$this->id}.Set('chart.zoom.vdir', 'up');
+                funnel{$this->id}.Set('chart.contextmenu', [['Zoom in', RGraph.Zoom]]);
+            }
+            funnel{$this->id}.Draw();
+		",CClientScript::POS_READY);
+	}
+	
+	public function run()
+	{
+		echo " <canvas id='{$this->id}' width='{$this->width}' height='{$this->height}'>[No canvas support]</canvas>";
+		echo "<div style='display: none'>
+       	 	  <div id='tooltip_leads'><b>Leads</b><br />All customers who registering live demo account.</div>
+	          <div id='tooltip_progress'><b>Progress</b><br />All leads on progress.</div>
+	         <div id='tooltip_account'><b>Account</b><br />Account created.</div>
+		    </div>";
+	}
+}
