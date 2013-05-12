@@ -106,9 +106,10 @@ class CssMenu extends CWidget
 	{
 //		$url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('ext.cssmenu.assets'));
 
-		$baseUrl=M::publishPath(__FILE__);
+		L::publishAssets(dirname(__FILE__)."/assets", array('/cssmenu.css'));
+//		L::publishPath(__FILE__, '/cssmenu.css');
 		
-		Yii::app()->clientScript->registerCssFile($baseUrl.'/cssmenu.css');
+//		Yii::app()->clientScript->registerCssFile($baseUrl.'/cssmenu.css');
 	}
 	
 	/*
