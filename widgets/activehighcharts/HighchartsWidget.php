@@ -241,20 +241,38 @@ class HighchartsWidget extends CBaseListView {
 
 		$cs = Yii::app()->clientScript;
 		$cs->registerCoreScript('jquery');
-		$cs->registerScriptFile($baseUrl . $scriptFile);
-
+//kevin add 2013-11-04
+		$live='http://highcharts.com/js';
+		$cs->registerScriptFile( ((YII_DEBUG)?$baseUrl:$live). $scriptFile);
+//kevin add 2013-11-04
+//		$cs->registerScriptFile($baseUrl . $scriptFile);
+//kevin del 2013-11-04
+		
 		// register exporting module if enabled via the 'exporting' option
 		if($this->options['exporting']['enabled']) {
 			$scriptFile = YII_DEBUG ? 'exporting.src.js' : 'exporting.js';
-			$cs->registerScriptFile("$baseUrl/modules/$scriptFile");
+//kevin add 2013-11-04
+			$live='http://highcharts.com/js/modules/';
+			$cs->registerScriptFile( ((YII_DEBUG)?"$baseUrl/modules/":$live). $scriptFile);
+//kevin add 2013-11-04
+//			$cs->registerScriptFile("$baseUrl/modules/$scriptFile");
+//kevin del 2013-11-04
 		}
 		
 		// register global theme if specified vie the 'theme' option
 		if(isset($this->options['theme'])) {
 			$scriptFile = $this->options['theme'] . ".js";
-			$cs->registerScriptFile("$baseUrl/themes/$scriptFile");
-		}
-		$cs->registerScript($id, $embeddedScript, CClientScript::POS_LOAD);
+//kevin add 2013-11-04
+			$live='http://highcharts.com/js/themes/';
+			$cs->registerScriptFile(((YII_DEBUG)?"$baseUrl/themes/":$live). $scriptFile);
+//			$cs->registerScriptFile("$baseUrl/themes/$scriptFile");
+//		$embeddedScript="alert('ok');";
+			L::registerAjaxReadyScript($embeddedScript, $id);
+//		$embeddedScript="$(document).ready(function() {".."});";
+//kevin add 2013-11-04
+			}
+//		$cs->registerScript($id, $embeddedScript, CClientScript::POS_LOAD);
+//kevin del 2013-11-04
 	}
 
     protected function registerChartProcessScript($id){
